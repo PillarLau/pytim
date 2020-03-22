@@ -222,10 +222,14 @@ class WillardChandler(Interface):
         # (december 2003). DOI: 10.1080/10867651.2003.10487582
         volume = self.density_field.reshape(
             tuple(np.array(ngrid[::-1]).astype(int)))
+        #verts, faces, normals, values = marching_cubes(
+        #    volume, None, spacing=tuple(spacing))
+        volume_thres = volume.max() - 0.9*volume.ptp()
         verts, faces, normals, values = marching_cubes(
-            volume, None, spacing=tuple(spacing))
+            volume, volume_thres, spacing=tuple(spacing))
+
         # note that len(normals) == len(verts): they are normals
         # at the vertices, and not normals of the faces
         self.triangulated_surface = [verts, faces, normals]
         self.surface_area = measure.mesh_surface_area(verts, faces)
-        verts += spacing[::-1] / 2.
+        #verts += spacing[::-1] / 2.
